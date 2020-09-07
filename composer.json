@@ -1,0 +1,28 @@
+{
+    "name": "chi-teck/trafaret",
+    "description": "Trafaret validation library",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.3"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^5.1",
+        "phpunit/phpunit": "^9.3",
+        "slevomat/coding-standard": "^6.3",
+        "squizlabs/php_codesniffer": "^3.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Trafaret\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Trafaret\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

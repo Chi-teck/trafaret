@@ -1,0 +1,16 @@
+language: php
+
+php:
+  - '7.4'
+  - '7.3'
+
+env:
+  matrix:
+  - DEPENDENCIES_LOWEST=0
+  - DEPENDENCIES_LOWEST=1
+
+install:
+  - composer install
+  - if [ $DEPENDENCIES_LOWEST -eq 1 ]; then composer update --prefer-lowest; fi
+
+script: ./scripts/run-tests.sh

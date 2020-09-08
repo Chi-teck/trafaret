@@ -48,11 +48,17 @@ final class ViolationList implements \ArrayAccess, \IteratorAggregate, \Countabl
         unset($this->violations[$offset]);
     }
 
+    /**
+     * Returns first violation.
+     */
     public function getFirst(): ?Violation
     {
         return $this->violations[0] ?? null;
     }
 
+    /**
+     * Returns last violation.
+     */
     public function getLast(): ?Violation
     {
         $last_key = \array_key_last($this->violations);
@@ -75,6 +81,9 @@ final class ViolationList implements \ArrayAccess, \IteratorAggregate, \Countabl
         return \count($this->violations);
     }
 
+    /**
+     * Returns a string representation of the list.
+     */
     public function __toString(): string
     {
         $output = '';

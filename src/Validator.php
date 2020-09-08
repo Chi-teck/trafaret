@@ -2,38 +2,39 @@
 
 namespace Trafaret;
 
-use Trafaret\Exception\UnexpectedValueException;
-use Trafaret\Exception\UnsupportedConstraintException;
-use Trafaret\Exception\ValidatorNotFoundException;
-use Trafaret\Constraint\ConstraintList;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 final class Validator
 {
     private const PLACEHOLDER = 'TRAFARET_PLACEHOLDER';
     private const EXPRESSION_PATTERN = '/{%\s*(.+?)\s*%}/';
 
+    private $expressionLanguage;
     private $config;
-    private $validators;
 
-    public function __construct(Config $config, ConstraintList $validators)
+    public function __construct(ExpressionLanguage $expression_language, Config $config)
     {
+        $this->expressionLanguage = $expression_language;
         $this->config = $config;
-        $this->validators = $validators;
     }
 
-    public function validate(string $input, string $trafaret): ViolationList
+    public function validate(string $input, Trafaret $trafaret): ViolationList
     {
+
+        $template = $trafaret->getTemplate();
+        $context = $trafaret->getContext();
+
         $input_lines = $this->split($input);
-        $trafaret_lines = $this->split($trafaret);
+        $trafaret_lines = $this->split($template);
 
         $violations = new ViolationList();
 
         $total_lines = \max(\count($trafaret_lines), \count($input_lines));
         for ($ln = 0; $ln < $total_lines; $ln++) {
-            $constraints = [];
+            $expressions = [];
 
-            $replace = static function (array $matches) use (&$constraints): string {
-                $constraints[] = $matches[1];
+            $replace = static function (array $matches) use (&$expressions): string {
+                $expressions[] = $matches[1];
                 return self::PLACEHOLDER;
             };
 
@@ -59,10 +60,12 @@ final class Validator
             }
             \array_shift($matches);
 
-            foreach ($constraints as $index => $constraint) {
+            foreach ($expressions as $index => $expression) {
                 $value = $matches[$index][0];
-                if ($violation = $this->validatePlaceholder($constraint, $value)) {
-                    $violations[] = $violation;
+                $values = ['value' => $value] + $context;
+                if (!$this->expressionLanguage->evaluate($expression, $values)) {
+                    $message = \sprintf('The value «%s» does not satisfy the «%s» expression.', $value, $expression);
+                    $violations[] = new Violation($message);
                 }
             }
         }
@@ -82,25 +85,5 @@ final class Validator
             $lines = \array_values(\array_filter($lines));
         }
         return $lines;
-    }
-
-    private function validatePlaceholder(string $constraint, string $value): ?Violation
-    {
-        foreach ($this->validators as $validator) {
-            try {
-                $validator->validate($constraint, $value);
-            }
-            catch (UnsupportedConstraintException $exception) {
-                continue;
-            }
-            catch (UnexpectedValueException $exception) {
-                return new Violation($exception->getMessage());
-            }
-            return null;
-        }
-
-        throw new ValidatorNotFoundException(
-            \sprintf('Could not find validator matching "%s" constraint.', $constraint),
-        );
     }
 }

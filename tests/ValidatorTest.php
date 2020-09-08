@@ -3,9 +3,10 @@
 namespace Trafaret\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Trafaret\Config;
+use Trafaret\Trafaret;
 use Trafaret\Validator;
-use Trafaret\Constraint\ConstraintList;
 use Trafaret\Violation;
 use Trafaret\ViolationList;
 
@@ -14,10 +15,10 @@ final class ValidatorTest extends TestCase
     /**
      * @dataProvider validatorDataProvider()
      */
-    public function testValidator(Config $config, string $input, string $trafaret, ViolationList $expected_violations): void
+    public function testValidator(Config $config, string $input, string $template, ViolationList $expected_violations): void
     {
-        $validator = new Validator($config, ConstraintList::createDefault());
-        $violations = $validator->validate($input, $trafaret);
+        $validator = new Validator(new ExpressionLanguage(), $config);
+        $violations = $validator->validate($input, new Trafaret($template));
         self::assertEquals($expected_violations, $violations);
     }
 
@@ -43,33 +44,33 @@ final class ValidatorTest extends TestCase
         $data[] = [
             self::createConfig(true, false, true),
             '<div>abc</div>',
-            '<div>{% matches /^abc$/ %}</div>',
+            '<div>{% value matches "/^abc$/" %}</div>',
             self::createViolationList(),
         ];
 
         $data[] = [
             self::createConfig(true, false, true),
             '<div>wrong</div>',
-            '<div>{% matches /abc/ %}</div>',
+            '<div>{% value matches "/abc/" %}</div>',
             self::createViolationList(
-                new Violation('The value "wrong" does not match the pattern "/abc/".'),
+                new Violation('The value «wrong» does not satisfy the «value matches "/abc/"» expression.'),
             ),
         ];
 
         $data[] = [
             self::createConfig(true, false, true),
-            '<div>abc</div><div>xyz</div>',
-            '<div>{% matches /^abc$/ %}</div><div>{% matches /^xyz/ %}</div>',
+            '<div>123</div><div>456</div>',
+            '<div>{% value == 123 %}</div><div>{% value == 456 %}</div>',
             self::createViolationList(),
         ];
 
         $data[] = [
             self::createConfig(true, false, true),
             '<div>abc</div> <span>extra</span>',
-            '<div>{% matches /^abc$/ %}</div>',
+            '<div>{% value == "abc" %}</div>',
             self::createViolationList(
                 new Violation(
-                    'Expected line "<div>{% matches /^abc$/ %}</div>" does not match "<div>abc</div> <span>extra</span>".',
+                    'Expected line "<div>{% value == "abc" %}</div>" does not match "<div>abc</div> <span>extra</span>".',
                 ),
             ),
         ];
@@ -79,18 +80,15 @@ final class ValidatorTest extends TestCase
             <<< 'HTML'
                 Line 1
                 Line 2
-                Line 3
             HTML,
             <<< 'HTML'
                 Line start
-                Line {% > 10 %}
-                Line {% matches /abc/ %}
+                Line {% value > 10 %}
                 Line end
             HTML,
             self::createViolationList(
                 new Violation('Expected line "Line start" does not match "Line 1".'),
-                new Violation('Expected a number greater than 10. Got: 2.'),
-                new Violation('The value "3" does not match the pattern "/abc/".'),
+                new Violation('The value «2» does not satisfy the «value > 10» expression.'),
                 new Violation('Line "Line end" was not found.'),
             )
         ];

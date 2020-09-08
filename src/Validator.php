@@ -18,9 +18,16 @@ final class Validator
         $this->config = $config;
     }
 
+    public static function createDefault(): self
+    {
+        return new self(
+            new ExpressionLanguage(null, [new ExpressionFunctionProvider()]),
+            Config::createDefault(),
+        );
+    }
+
     public function validate(string $input, Trafaret $trafaret): ViolationList
     {
-
         $template = $trafaret->getTemplate();
         $context = $trafaret->getContext();
 
@@ -48,17 +55,16 @@ final class Validator
             if (!\preg_match_all($pattern, $input_line, $matches)) {
                 if ($input_line === null) {
                     $message = \sprintf('Line "%s" was not found.', $trafaret_line);
-                }
-                elseif ($trafaret_line === null) {
+                } elseif ($trafaret_line === null) {
                     $message = \sprintf('Line "%s" was not expected.', $input_line);
-                }
-                else {
+                } else {
                     $message = \sprintf('Expected line "%s" does not match "%s".', $trafaret_line, $input_line);
                 }
                 $violations[] = new Violation($message);
                 continue;
             }
             \array_shift($matches);
+
 
             foreach ($expressions as $index => $expression) {
                 $value = $matches[$index][0];
@@ -82,7 +88,10 @@ final class Validator
             $lines = \array_map('rtrim', $lines);
         }
         if ($this->config->isEmptyLinesIgnored()) {
-            $lines = \array_values(\array_filter($lines));
+            $filter = static function (string $input): bool {
+                return \strlen($input) > 0 && !\ctype_space($input);
+            };
+            $lines = \array_values(\array_filter($lines, $filter));
         }
         return $lines;
     }

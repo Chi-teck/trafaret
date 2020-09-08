@@ -15,7 +15,7 @@ final class Trafaret
     
     public static function createFromFile(string $file_name, array $context = []): self
     {
-        if (\is_file($file_name)) {
+        if (!\is_file($file_name)) {
             throw new \InvalidArgumentException(\sprintf('Could not load file "%s".', $file_name));
         }
         $template = \file_get_contents($file_name);

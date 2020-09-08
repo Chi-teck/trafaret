@@ -65,7 +65,6 @@ final class Validator
             }
             \array_shift($matches);
 
-
             foreach ($expressions as $index => $expression) {
                 $value = $matches[$index][0];
                 $values = ['value' => $value] + $context;

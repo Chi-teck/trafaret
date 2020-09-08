@@ -11,32 +11,31 @@ A simple way to validate textual data.
 ```php
 <?php
 
-use Trafaret\Config;
-use Trafaret\Constraint\ConstraintList;
-use Trafaret\Constraint;
+use Trafaret\Trafaret;
+use Trafaret\Validator;
 
-include __DIR__ . '/path/to/vendor/autoload.php';
+include __DIR__ . '/../vendor/autoload.php';
 
 $input = <<< 'HTML'
-  <h1>Example</h1>
-  <div>
-    <time>15:30</time>
-    <span class="total">15</span>
-  </div>
+    <h1>Example</h1>
+    <div>
+        <time>15:30</time>
+        <span class="total">15</span>
+    </div>
 HTML;
 
-$trafaret = <<< 'HTML'
-  <h1>Example</h1>
-  <div>
-    <time>{% matches /\d\d:\d\d/ %}</time>
-    <span class="total">{% > 10 %}</span>
-  </div>
-HTML;
-
-$validator = new Validator(
-    Config::createDefault(),
-    ConstraintList::createDefault(),
+$trafaret = new Trafaret(
+    <<< 'HTML'
+    <h1>Example</h1>
+    <div>
+        <time>{% value matches "/^[0-2][0-9]:[0-5][0-9]$/" %}</time>
+        <span class="total">{% value == total %}</span>
+    </div>
+    HTML,
+    ['total' => 15],
 );
+
+$validator = Validator::createDefault();
 
 $violations = $validator->validate($input, $trafaret);
 ```

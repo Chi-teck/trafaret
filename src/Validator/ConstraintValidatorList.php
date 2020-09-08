@@ -20,6 +20,7 @@ final class ConstraintValidatorList implements \ArrayAccess, \IteratorAggregate,
             new RegExp(),
             new GreaterThan(),
             new LessThan(),
+            new Url(),
         );
     }
 

@@ -45,22 +45,22 @@ final class Validator
                 return self::PLACEHOLDER;
             };
 
-            $input_line = $input_lines[$ln] ?? null;
-            $trafaret_line = $trafaret_lines[$ln] ?? null;
+            $input_line = $input_lines[$ln] ?? '';
+            $trafaret_line = $trafaret_lines[$ln] ?? '';
 
             $tmp_trafaret_line = \preg_replace_callback(self::EXPRESSION_PATTERN, $replace, $trafaret_line);
             $pattern = '/^' . \str_replace(self::PLACEHOLDER, '(.*)', \preg_quote($tmp_trafaret_line, '/')) . '$/';
 
             $matches = [];
             if (!\preg_match_all($pattern, $input_line, $matches)) {
-                if ($input_line === null) {
+                if (!$input_line) {
                     $message = \sprintf('Line "%s" was not found.', $trafaret_line);
-                } elseif ($trafaret_line === null) {
+                } elseif (!$trafaret_line) {
                     $message = \sprintf('Line "%s" was not expected.', $input_line);
                 } else {
                     $message = \sprintf('Expected line "%s" does not match "%s".', $trafaret_line, $input_line);
                 }
-                $violations[] = new Violation($message);
+                $violations[] = new ComparableViolation($message, $trafaret_line, $input_line);
                 continue;
             }
             \array_shift($matches);

@@ -4,6 +4,7 @@ namespace Trafaret\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use Trafaret\ComparableViolation;
 use Trafaret\Config;
 use Trafaret\Trafaret;
 use Trafaret\Validator;
@@ -69,8 +70,10 @@ final class ValidatorTest extends TestCase
             '<div>abc</div> <span>extra</span>',
             '<div>{% value == "abc" %}</div>',
             self::createViolationList(
-                new Violation(
+                new ComparableViolation(
                     'Expected line "<div>{% value == "abc" %}</div>" does not match "<div>abc</div> <span>extra</span>".',
+                    '<div>{% value == "abc" %}</div>',
+                    '<div>abc</div> <span>extra</span>',
                 ),
             ),
         ];
@@ -87,9 +90,9 @@ final class ValidatorTest extends TestCase
                 Line end
             HTML,
             self::createViolationList(
-                new Violation('Expected line "Line start" does not match "Line 1".'),
+                new ComparableViolation('Expected line "Line start" does not match "Line 1".', 'Line start', 'Line 1'),
                 new Violation('The value «2» does not satisfy the «value > 10» expression.'),
-                new Violation('Line "Line end" was not found.'),
+                new ComparableViolation('Line "Line end" was not found.', 'Line end', ''),
             )
         ];
 

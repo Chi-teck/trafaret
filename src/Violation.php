@@ -4,8 +4,10 @@ namespace Trafaret;
 
 /**
  * A data structure to represent a single violation.
+ *
+ * @internal
  */
-final class Violation
+class Violation
 {
     private $message;
 

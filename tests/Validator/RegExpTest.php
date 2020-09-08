@@ -4,7 +4,7 @@ namespace Trafaret\Tests\Validator;
 
 use Trafaret\Exception\UnexpectedValueException as UVE;
 use Trafaret\Exception\UnsupportedConstraintException as UCE;
-use Trafaret\Validator\RegExp;
+use Trafaret\Constraint\RegExp;
 
 final class RegExpTest extends AbstractValidatorTest
 {

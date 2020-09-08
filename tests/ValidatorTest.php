@@ -5,7 +5,7 @@ namespace Trafaret\Tests;
 use PHPUnit\Framework\TestCase;
 use Trafaret\Config;
 use Trafaret\Validator;
-use Trafaret\Validator\ConstraintValidatorList;
+use Trafaret\Constraint\ConstraintList;
 use Trafaret\Violation;
 use Trafaret\ViolationList;
 
@@ -16,7 +16,7 @@ final class ValidatorTest extends TestCase
      */
     public function testValidator(Config $config, string $input, string $trafaret, ViolationList $expected_violations): void
     {
-        $validator = new Validator($config, ConstraintValidatorList::createDefault());
+        $validator = new Validator($config, ConstraintList::createDefault());
         $violations = $validator->validate($input, $trafaret);
         self::assertEquals($expected_violations, $violations);
     }

@@ -1,8 +1,8 @@
 <?php
 
-namespace Trafaret\Validator;
+namespace Trafaret\Constraint;
 
-interface ConstraintValidatorInterface
+interface ConstraintInterface
 {
     /**
      * Validates a value by expression.

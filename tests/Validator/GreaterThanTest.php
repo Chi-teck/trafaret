@@ -4,7 +4,7 @@ namespace Trafaret\Tests\Validator;
 
 use Trafaret\Exception\UnexpectedValueException as UVE;
 use Trafaret\Exception\UnsupportedConstraintException as UCE;
-use Trafaret\Validator\GreaterThan;
+use Trafaret\Constraint\GreaterThan;
 
 final class GreaterThanTest extends AbstractValidatorTest
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Trafaret\Validator;
+namespace Trafaret\Constraint;
 
-final class ConstraintValidatorList implements \ArrayAccess, \IteratorAggregate, \Countable
+final class ConstraintList implements \ArrayAccess, \IteratorAggregate, \Countable
 {
     private $validators = [];
 
-    public function __construct(ConstraintValidatorInterface ...$validators)
+    public function __construct(ConstraintInterface ...$validators)
     {
         foreach ($validators as $validator) {
             $this[] = $validator;
@@ -35,7 +35,7 @@ final class ConstraintValidatorList implements \ArrayAccess, \IteratorAggregate,
     /**
      * {@inheritdoc}
      */
-    public function offsetGet($offset): ConstraintValidatorInterface
+    public function offsetGet($offset): ConstraintInterface
     {
         return $this->validators[$offset];
     }
@@ -45,8 +45,8 @@ final class ConstraintValidatorList implements \ArrayAccess, \IteratorAggregate,
      */
     public function offsetSet($offset, $validator): void
     {
-        if (!$validator instanceof ConstraintValidatorInterface) {
-            $message = \sprintf('Validators must implement %s interface.', ConstraintValidatorInterface::class);
+        if (!$validator instanceof ConstraintInterface) {
+            $message = \sprintf('Validators must implement %s interface.', ConstraintInterface::class);
             throw new \InvalidArgumentException($message);
         }
 

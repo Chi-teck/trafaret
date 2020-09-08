@@ -4,7 +4,7 @@ namespace Trafaret\Tests\Validator;
 
 use Trafaret\Exception\UnexpectedValueException as UVE;
 use Trafaret\Exception\UnsupportedConstraintException as UCE;
-use Trafaret\Validator\Url;
+use Trafaret\Constraint\Url;
 
 final class UrlTest extends AbstractValidatorTest
 {

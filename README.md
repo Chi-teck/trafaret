@@ -9,8 +9,8 @@ A simple way to validate textual data.
 <?php
 
 use Trafaret\Config;
-use Trafaret\Validator\ConstraintValidatorList;
-use Trafaret\Validator;
+use Trafaret\Constraint\ConstraintList;
+use Trafaret\Constraint;
 
 include __DIR__ . '/path/to/vendor/autoload.php';
 
@@ -32,7 +32,7 @@ HTML;
 
 $validator = new Validator(
     Config::createDefault(),
-    ConstraintValidatorList::createDefault(),
+    ConstraintList::createDefault(),
 );
 
 $violations = $validator->validate($input, $trafaret);

@@ -1,22 +1,22 @@
 <?php
 
-namespace Trafaret\Validator;
+namespace Trafaret\Constraint;
 
 use Trafaret\Exception\UnexpectedValueException;
 use Trafaret\Exception\UnsupportedConstraintException;
 
-final class RegExp implements ConstraintValidatorInterface
+final class GreaterThan implements ConstraintInterface
 {
     /**
      * {@inheritdoc}
      */
     public function validate(string $constraint, string $value): void
     {
-        if (!\preg_match('/^matches\s+(?P<pattern>[^\s]+)$/i', $constraint, $matches)) {
+        if (!\preg_match('/^> (?P<limit>-?\d+(\.\d+)?)$/i', $constraint, $matches)) {
             throw new UnsupportedConstraintException();
         }
-        if (!\preg_match($matches['pattern'], $value)) {
-            $message = \sprintf('The value "%s" does not match the pattern "%s".', $value, $matches['pattern']);
+        if (!\is_numeric($value) || $value <= $matches['limit']) {
+            $message = \sprintf('Expected a number greater than %s. Got: %s.', $matches['limit'], $value);
             throw new UnexpectedValueException($message);
         }
     }

@@ -5,7 +5,7 @@ namespace Trafaret;
 use Trafaret\Exception\UnexpectedValueException;
 use Trafaret\Exception\UnsupportedConstraintException;
 use Trafaret\Exception\ValidatorNotFoundException;
-use Trafaret\Validator\ConstraintValidatorList;
+use Trafaret\Constraint\ConstraintList;
 
 final class Validator
 {
@@ -15,7 +15,7 @@ final class Validator
     private $config;
     private $validators;
 
-    public function __construct(Config $config, ConstraintValidatorList $validators)
+    public function __construct(Config $config, ConstraintList $validators)
     {
         $this->config = $config;
         $this->validators = $validators;

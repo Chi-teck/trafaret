@@ -1,10 +1,10 @@
 <?php
 
-namespace Trafaret\Validator;
+namespace Trafaret\Constraint;
 
 use Trafaret\Exception\UnsupportedConstraintException;
 
-final class Any implements ConstraintValidatorInterface
+final class Any implements ConstraintInterface
 {
     /**
      * {@inheritdoc}

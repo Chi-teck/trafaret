@@ -3,7 +3,7 @@
 namespace Trafaret\Tests\Validator;
 
 use Trafaret\Exception\UnsupportedConstraintException as UCE;
-use Trafaret\Validator\Any;
+use Trafaret\Constraint\Any;
 
 final class AnyTest extends AbstractValidatorTest
 {

@@ -10,7 +10,7 @@ final class ExpressionFunctionProviderTest extends TestCase
     /**
      * @dataProvider functionDataProvider
      */
-    public function testFunction(int $index, string $name, array $data): void
+    public function testFunction(int $index, string $name, ?string $compiled, array $data = []): void
     {
         $function = (new ExpressionFunctionProvider())->getFunctions()[$index];
         self::assertSame($name, $function->getName());
@@ -20,25 +20,41 @@ final class ExpressionFunctionProviderTest extends TestCase
             self::assertSame($result, $evaluator([], $input));
         }
 
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('Compilation is not supported.');
-        $function->getCompiler()();
+        if ($compiled === null) {
+            $this->expectException(\LogicException::class);
+            $this->expectExceptionMessage('Compilation is not supported.');
+        }
+        self::assertSame($compiled, $function->getCompiler()());
     }
 
     public static function functionDataProvider(): array
     {
+        $index = 0;
+
         $data[] = [
-            0,
-            'is_email',
+            $index++,
+            'is_empty',
+            null,
             [
-                'wrong email' => false,
-                'no-reply@example.com' => true,
-            ]
+                '123' => false,
+                '' => true,
+            ],
         ];
 
         $data[] = [
-            1,
+            $index++,
+            'is_email',
+            null,
+            [
+                'wrong email' => false,
+                'no-reply@example.com' => true,
+            ],
+        ];
+
+        $data[] = [
+            $index++,
             'is_url',
+            null,
             [
                 'wrong url' => false,
                 'https://example.com' => true,
@@ -46,8 +62,9 @@ final class ExpressionFunctionProviderTest extends TestCase
         ];
 
         $data[] = [
-            2,
+            $index++,
             'is_integer',
+            null,
             [
                 '123' => true,
                 'aaa' => false,
@@ -58,6 +75,17 @@ final class ExpressionFunctionProviderTest extends TestCase
                 '1a' => false,
             ]
         ];
+
+        $data[] = [$index++, 'is_numeric', '\is_numeric()'];
+        $data[] = [$index++, 'ctype_alnum', '\ctype_alnum()'];
+        $data[] = [$index++, 'ctype_alpha', '\ctype_alpha()'];
+        $data[] = [$index++, 'ctype_cntrl', '\ctype_cntrl()'];
+        $data[] = [$index++, 'ctype_graph', '\ctype_graph()'];
+        $data[] = [$index++, 'ctype_lower', '\ctype_lower()'];
+        $data[] = [$index++, 'ctype_print', '\ctype_print()'];
+        $data[] = [$index++, 'ctype_punct', '\ctype_punct()'];
+        $data[] = [$index++, 'ctype_space', '\ctype_space()'];
+        $data[] = [$index, 'ctype_xdigit', '\ctype_xdigit()'];
 
         return $data;
     }

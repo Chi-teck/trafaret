@@ -55,9 +55,11 @@ final class Validator
             if (!\preg_match_all($pattern, $input_line, $matches)) {
                 if (!$input_line) {
                     $message = \sprintf('Line "%s" was not found.', $trafaret_line);
-                } elseif (!$trafaret_line) {
+                }
+                elseif (!$trafaret_line) {
                     $message = \sprintf('Line "%s" was not expected.', $input_line);
-                } else {
+                }
+                else {
                     $message = \sprintf('Expected line "%s" does not match "%s".', $trafaret_line, $input_line);
                 }
                 $violations[] = new ComparableViolation($message, $trafaret_line, $input_line);

@@ -5,6 +5,7 @@
     "license": "MIT",
     "require": {
         "php": ">=7.3",
+        "ext-ctype": "*",
         "symfony/expression-language": "^5.1"
     },
     "require-dev": {

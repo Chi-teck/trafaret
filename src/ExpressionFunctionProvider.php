@@ -14,6 +14,14 @@ final class ExpressionFunctionProvider implements ExpressionFunctionProviderInte
         };
 
         $functions[] = new ExpressionFunction(
+            'is_empty',
+            $compiler,
+            static function (array $arguments, string $input): bool {
+                return \trim($input) === '';
+            },
+        );
+
+        $functions[] = new ExpressionFunction(
             'is_email',
             $compiler,
             static function (array $arguments, string $input): bool {
@@ -36,6 +44,17 @@ final class ExpressionFunctionProvider implements ExpressionFunctionProviderInte
                 return \strval($input) === \strval(\intval($input));
             },
         );
+
+        $functions[] = ExpressionFunction::fromPhp('is_numeric');
+        $functions[] = ExpressionFunction::fromPhp('ctype_alnum');
+        $functions[] = ExpressionFunction::fromPhp('ctype_alpha');
+        $functions[] = ExpressionFunction::fromPhp('ctype_cntrl');
+        $functions[] = ExpressionFunction::fromPhp('ctype_graph');
+        $functions[] = ExpressionFunction::fromPhp('ctype_lower');
+        $functions[] = ExpressionFunction::fromPhp('ctype_print');
+        $functions[] = ExpressionFunction::fromPhp('ctype_punct');
+        $functions[] = ExpressionFunction::fromPhp('ctype_space');
+        $functions[] = ExpressionFunction::fromPhp('ctype_xdigit');
 
         return $functions;
     }

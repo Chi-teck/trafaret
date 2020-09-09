@@ -44,5 +44,6 @@ trait TrafaretTrait
                 $this->fail($violation);
             }
         }
+        self::assertTrue(true);
     }
 }

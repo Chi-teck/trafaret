@@ -21,7 +21,7 @@ $trafaret = new Trafaret(
     <<< 'HTML'
         <h1>Example</h1>
         <div>
-            <time>{% value matches "/^[0-2][0-9]:[0-5][0-9]$/" %}</time>
+            <time>{% value matches '/^[0-2][0-9]:[0-5][0-9]$/' %}</time>
             <span class="total">{% value == expected_total %}</span>
         </div>
     HTML,
@@ -32,9 +32,10 @@ $validator = Validator::createDefault();
 
 $violations = $validator->validate($input, $trafaret);
 ```
+Trafaret placeholders are validated using [Symfony Expression Language](https://symfony.com/doc/current/components/expression_language.html).
 
-For PHPUnit based you can make use TrafaretTrait to set up validator as shown below.
 
+For tests based on PHPUnit you can make use of TrafaretTrait to set up validator as shown below.
 ```php
 final class HomePageTest extends SiteTestCase
 {
@@ -50,10 +51,6 @@ final class HomePageTest extends SiteTestCase
 
 ```
 ## Configuration
-
-Instead of getting an instance of the validator from `::createDefault()` factory it is
-recommended to configure it manually.
-
 ```php
 $expression_language = new ExpressionLanguage(null, [new ExpressionFunctionProvider()]); 
 $config = new Config([
@@ -61,7 +58,6 @@ $config = new Config([
     'ignore_trailing_spaces' => false,
     'ignore_empty_lines' => true,
 ]);
-
 $validator = new Validator($expression_language, $config);
 ```
 

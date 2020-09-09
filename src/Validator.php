@@ -28,7 +28,7 @@ final class Validator
 
     public function validate(string $input, Trafaret $trafaret): ViolationList
     {
-        $template = $trafaret->getTemplate();
+        $template = \rtrim($trafaret->getTemplate());
         $context = $trafaret->getContext();
 
         $input_lines = $this->split($input);

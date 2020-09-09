@@ -9,13 +9,6 @@ A simple way to validate multiline textual data.
 
 ## Usage
 ```php
-<?php
-
-use Trafaret\Trafaret;
-use Trafaret\Validator;
-
-include __DIR__ . '/vendor/autoload.php';
-
 $input = <<< 'HTML'
     <h1>Example</h1>
     <div>
@@ -29,15 +22,47 @@ $trafaret = new Trafaret(
         <h1>Example</h1>
         <div>
             <time>{% value matches "/^[0-2][0-9]:[0-5][0-9]$/" %}</time>
-            <span class="total">{% value == total %}</span>
+            <span class="total">{% value == expected_total %}</span>
         </div>
     HTML,
-    ['total' => 15],
+    ['expected_total' => 15],
 );
 
 $validator = Validator::createDefault();
 
 $violations = $validator->validate($input, $trafaret);
+```
+
+For PHPUnit based you can make use TrafaretTrait to set up validator as shown below.
+
+```php
+final class HomePageTest extends SiteTestCase
+{
+    use TrafaretTrait;
+    
+    public function testMarkup(): void
+    {
+        $trafaret = Trafaret::createFromFile(__DIR__ . '/../fixtures/home-page.html.trf');
+        $actual_html = $this->findByXpath('//div[@class = "page"]')->getOuterHtml();
+        $this->assertStringByTrafaret($trafaret, $actual_html);
+    }
+}
+
+```
+## Configuration
+
+Instead of getting an instance of the validator from `::createDefault()` factory it is
+recommended to configure it manually.
+
+```php
+$expression_language = new ExpressionLanguage(null, [new ExpressionFunctionProvider()]); 
+$config = new Config([
+    'ignore_leading_spaces' => true,
+    'ignore_trailing_spaces' => false,
+    'ignore_empty_lines' => true,
+]);
+
+$validator = new Validator($expression_language, $config);
 ```
 
 ## License

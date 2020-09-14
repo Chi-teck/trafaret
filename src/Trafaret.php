@@ -2,15 +2,15 @@
 
 namespace Trafaret;
 
-final class Trafaret
+final class Trafaret implements TrafaretInterface
 {
     private $template;
-    private $context;
+    private $constraints;
 
-    public function __construct(string $template, array $context = [])
+    public function __construct(string $template, array $constraints = [])
     {
         $this->template = $template;
-        $this->context = $context;
+        $this->constraints = $constraints;
     }
     
     public static function createFromFile(string $file_name, array $context = []): self
@@ -27,8 +27,13 @@ final class Trafaret
         return $this->template;
     }
 
-    public function getContext(): array
+    public function getConstraints(): array
     {
-        return $this->context;
+        return $this->constraints;
+    }
+
+    public function cloneWithTemplate(string $template): TrafaretInterface
+    {
+        return new self($template, $this->getConstraints());
     }
 }

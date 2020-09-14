@@ -1,18 +1,21 @@
 {
     "name": "chi-teck/trafaret",
-    "description": "Trafaret validation library",
+    "description": "Trafaret data processor",
     "type": "library",
     "license": "MIT",
     "require": {
         "php": ">=7.3",
         "ext-ctype": "*",
-        "symfony/expression-language": "^5.1"
+        "ext-dom": "*",
+        "ext-libxml": "*",
+        "symfony/polyfill-php80": "^1.16",
+        "symfony/validator": "^4.4 || ^5.1"
     },
     "require-dev": {
-        "symfony/var-dumper": "^5.1",
         "phpunit/phpunit": "^9.3",
         "slevomat/coding-standard": "^6.3",
-        "squizlabs/php_codesniffer": "^3.5"
+        "squizlabs/php_codesniffer": "^3.5",
+        "symfony/var-dumper": "^5.1"
     },
     "autoload": {
         "psr-4": {

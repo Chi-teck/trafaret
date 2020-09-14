@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Chi-teck/trafaret.svg?branch=master)](https://travis-ci.org/Chi-teck/trafaret)
 
-A simple way to validate multiline textual data.
+A simple way to extract data from multiline textual snippets.
 
 ## Installation
 `composer require chi-teck/trafaret --dev`
@@ -10,29 +10,46 @@ A simple way to validate multiline textual data.
 ## Usage
 ```php
 $input = <<< 'HTML'
-    <h1>Example</h1>
+    <h1>Example</h1> 
     <div>
-        <time>15:30</time>
+        <time>12:08</time>
         <span class="total">15</span>
     </div>
-HTML;
+    HTML;
 
 $trafaret = new Trafaret(
     <<< 'HTML'
         <h1>Example</h1>
         <div>
-            <time>{% value matches '/^[0-2][0-9]:[0-5][0-9]$/' %}</time>
-            <span class="total">{% value == expected_total %}</span>
+            <time>{{ time }}</time>
+            <span class="total">{{ total }}</span>
         </div>
-    HTML,
-    ['expected_total' => 15],
+        HTML,
+    [
+        'time' => new Regex('/^\d\d:\d\d$/'),
+        'total' => new GreaterThan(10),
+    ],
 );
 
-$validator = Validator::createDefault();
+$manager = new Manager(
+    Validation::createValidator(),
+    new Chained(
+        new LeadingSpace(),
+        new EmptyLine(),
+    ),
+);
 
-$violations = $validator->validate($input, $trafaret);
+try {
+    $data = $manager->apply($trafaret, $input);
+}
+catch (ExceptionInterface $exception) {
+    \file_put_contents('php://stderr', $exception->getMessage() . "\n");
+    exit(1);
+}
+
+print_r($data);
 ```
-Trafaret placeholders are validated using [Symfony Expression Language](https://symfony.com/doc/current/components/expression_language.html).
+Placeholders are validated using [Symfony Validator](https://symfony.com/doc/current/components/validator.html).
 
 
 For tests based on PHPUnit you can make use of TrafaretTrait to set up validator as shown below.
@@ -48,17 +65,6 @@ final class HomePageTest extends SiteTestCase
         $this->assertStringByTrafaret($trafaret, $actual_html);
     }
 }
-
-```
-## Configuration
-```php
-$expression_language = new ExpressionLanguage(null, [new ExpressionFunctionProvider()]); 
-$config = new Config([
-    'ignore_leading_spaces' => true,
-    'ignore_trailing_spaces' => false,
-    'ignore_empty_lines' => true,
-]);
-$validator = new Validator($expression_language, $config);
 ```
 
 ## License

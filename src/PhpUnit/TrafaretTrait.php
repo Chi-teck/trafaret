@@ -4,24 +4,34 @@ namespace Trafaret\PhpUnit;
 
 use PHPUnit\Framework\ExpectationFailedException;
 use SebastianBergmann\Comparator\ComparisonFailure;
-use Trafaret\ComparableViolation;
+use Symfony\Component\Validator\Validation;
+use Trafaret\Exception\UnexpectedLineException;
+use Trafaret\Manager;
+use Trafaret\Processor\Chained;
+use Trafaret\Processor\EmptyLine;
+use Trafaret\Processor\LeadingSpace;
 use Trafaret\Trafaret;
-use Trafaret\Validator;
 
 trait TrafaretTrait
 {
-    private $trafaretValidator;
+    private $trafaretManager;
 
-    private function getTrafaretValidator(): Validator
+    private function getTrafaretManager(): Manager
     {
-        if (!$this->trafaretValidator) {
-            $this->trafaretValidator = Validator::createDefault();
+        if (!$this->trafaretManager) {
+            $this->trafaretManager = new Manager(
+                Validation::createValidator(),
+                new Chained(
+                    new LeadingSpace(),
+                    new EmptyLine(),
+                ),
+            );
         }
-        return $this->trafaretValidator;
+        return $this->trafaretManager;
     }
 
     /**
-     * @param \Trafaret\Trafaret|string $trafaret
+     * @param \Trafaret\TrafaretInterface|string $trafaret
      *   A trafaret object or trafaret template.
      */
     public function assertStringByTrafaret($trafaret, string $actual): void
@@ -30,20 +40,18 @@ trait TrafaretTrait
             $trafaret = new Trafaret($trafaret);
         }
 
-        $validator = $this->getTrafaretValidator();
+        $manager = $this->getTrafaretManager();
 
-        $violations = $validator->validate($actual, $trafaret);
-        if ($violation = $violations->getFirst()) {
-            if ($violation instanceof ComparableViolation) {
-                $expected = $violation->getExpected();
-                $actual = $violation->getGetActual();
-                $failure = new ComparisonFailure($expected, $actual, $expected, $actual);
-                throw new ExpectationFailedException('Failed asserting that two lines are equal.', $failure);
-            }
-            else {
-                $this->fail($violation);
-            }
+        try {
+            $manager->apply($trafaret, $actual);
         }
+        catch (UnexpectedLineException $exception) {
+            $expected = $exception->getExpectedLine();
+            $actual = $exception->getGetActualLine();
+            $failure = new ComparisonFailure($expected, $actual, $expected, $actual);
+            throw new ExpectationFailedException('Failed asserting that two lines are equal.', $failure);
+        }
+
         self::assertTrue(true);
     }
 }

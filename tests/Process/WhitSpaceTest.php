@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Trafaret\Processor\Tests;
 
 use PHPUnit\Framework\TestCase;

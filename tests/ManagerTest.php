@@ -139,8 +139,25 @@ final class ManagerTest extends TestCase
                 ['bbb' => new GreaterThan(10)],
             ),
             'aaa 5 ccc',
-            ['bbb' => '10'],
+            [],
             "Unexpected value \"5\" for \"bbb\" variable.\nThis value should be greater than 10.",
+        ];
+
+        // -- Trafaret with ignored placeholder.
+        $data[8] = [
+            new Trafaret('aaa {{ -bbb }} ccc'),
+            'aaa 15 ccc',
+        ];
+
+        // -- Trafaret with ignored placeholder and a constraint.
+        $data[9] = [
+            new Trafaret(
+                'aaa {{ -bbb }} ccc',
+                ['-bbb' => new GreaterThan(10)],
+            ),
+            'aaa 5 ccc',
+            [],
+            "Unexpected value \"5\" for \"-bbb\" variable.\nThis value should be greater than 10.",
         ];
 
         return $data;

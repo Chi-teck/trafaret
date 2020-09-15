@@ -20,14 +20,17 @@ final class Dom implements ProcessorInterface
 
     /**
      * Normalizes an HTML snippet.
-     *
-     * @todo Handle DOM errors.
      */
     private static function normalize(string $html): string
     {
         $dom = new \DOMDocument();
-        $dom->loadHTML($html, \LIBXML_HTML_NOIMPLIED | \LIBXML_HTML_NODEFDTD);
+        // Ignore warnings during HTML soup loading.
+        @$dom->loadHTML($html, \LIBXML_HTML_NOIMPLIED | \LIBXML_HTML_NODEFDTD);
         $dom->normalize();
-        return $dom->saveHTML();
+        $result = $dom->saveHTML();
+        if ($result === false) {
+            throw new \RuntimeException('Could not save HTML');
+        }
+        return $result;
     }
 }

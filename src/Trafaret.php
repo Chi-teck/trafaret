@@ -24,16 +24,25 @@ final class Trafaret implements TrafaretInterface
         return new self($template, $context);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTemplate(): string
     {
         return $this->template;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getConstraints(): array
     {
         return $this->constraints;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function cloneWithTemplate(string $template): TrafaretInterface
     {
         return new self($template, $this->getConstraints());

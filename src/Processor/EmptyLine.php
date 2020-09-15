@@ -8,6 +8,10 @@ use Trafaret\TrafaretInterface;
 
 final class EmptyLine implements ProcessorInterface
 {
+
+    /**
+     * {@inheritdoc}
+     */
     public function processTrafaret(TrafaretInterface $trafaret): TrafaretInterface
     {
         $template = \preg_replace('/^[ \t]*[\r\n]+/m', '', $trafaret->getTemplate());
@@ -15,6 +19,9 @@ final class EmptyLine implements ProcessorInterface
         return $trafaret->cloneWithTemplate($template);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function processInput(string $input): string
     {
         $input = \preg_replace('/^[ \t]*[\r\n]+/m', '', $input);

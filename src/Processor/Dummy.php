@@ -8,11 +8,17 @@ use Trafaret\TrafaretInterface;
 
 final class Dummy implements ProcessorInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public function processTrafaret(TrafaretInterface $trafaret): TrafaretInterface
     {
         return $trafaret;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function processInput(string $input): string
     {
         return $input;

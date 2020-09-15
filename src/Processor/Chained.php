@@ -15,6 +15,9 @@ final class Chained implements ProcessorInterface
         $this->processors = $processors;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function processTrafaret(TrafaretInterface $trafaret): TrafaretInterface
     {
         foreach ($this->processors as $processor) {
@@ -23,6 +26,9 @@ final class Chained implements ProcessorInterface
         return $trafaret;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function processInput(string $input): string
     {
         foreach ($this->processors as $processor) {

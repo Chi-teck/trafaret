@@ -31,13 +31,7 @@ $trafaret = new Trafaret(
     ],
 );
 
-$manager = new Manager(
-    Validation::createValidator(),
-    new Chained(
-        new LeadingSpace(),
-        new EmptyLine(),
-    ),
-);
+$manager = Manager::createDefault();
 
 try {
     $data = $manager->apply($trafaret, $input);

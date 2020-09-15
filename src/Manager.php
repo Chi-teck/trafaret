@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Trafaret;
 
+use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Trafaret\Exception\UnexpectedLineException;
 use Trafaret\Exception\UnexpectedValueException;
+use Trafaret\Processor\Chained;
+use Trafaret\Processor\EmptyLine;
+use Trafaret\Processor\LeadingSpace;
 use Trafaret\Processor\ProcessorInterface;
 
 final class Manager
@@ -23,6 +27,20 @@ final class Manager
         $this->processor = $processor;
     }
 
+    public static function createDefault(): self
+    {
+        return new self(
+            Validation::createValidator(),
+            new Chained(
+                new LeadingSpace(),
+                new EmptyLine(),
+            ),
+        );
+    }
+
+    /**
+     * Returns data defined by trafaret placeholder.
+     */
     public function apply(TrafaretInterface $trafaret, string $input): array
     {
         $trafaret = $this->processor->processTrafaret($trafaret);
@@ -86,11 +104,14 @@ final class Manager
                     throw new UnexpectedValueException($violations[0], $name);
                 }
             }
-            if (\str_ends_with($name, '[]')) {
-                $data[\substr($name, 0, -2)][] = $value;
-            }
-            else {
-                $data[$name] = $value;
+            // Placeholders prefixed with '-' can be ignored.
+            if (!\str_starts_with($name, '-')) {
+                if (\str_ends_with($name, '[]')) {
+                    $data[\substr($name, 0, -2)][] = $value;
+                }
+                else {
+                    $data[$name] = $value;
+                }
             }
         }
         return $data;

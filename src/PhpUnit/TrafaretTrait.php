@@ -12,6 +12,7 @@ use Trafaret\Manager;
 use Trafaret\Processor\Chained;
 use Trafaret\Processor\EmptyLine;
 use Trafaret\Processor\LeadingSpace;
+use Trafaret\Processor\TagSplitter;
 use Trafaret\Trafaret;
 
 trait TrafaretTrait
@@ -25,6 +26,7 @@ trait TrafaretTrait
                 Validation::createValidator(),
                 new Chained(
                     new LeadingSpace(),
+                    new TagSplitter(),
                     new EmptyLine(),
                 ),
             );

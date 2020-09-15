@@ -46,7 +46,7 @@ print_r($data);
 Placeholders are validated using [Symfony Validator](https://symfony.com/doc/current/components/validator.html).
 
 
-For tests based on PHPUnit you can make use of TrafaretTrait to set up validator as shown below.
+For tests based on PHPUnit you can make use of TrafaretTrait to validate markup as shown below.
 ```php
 final class HomePageTest extends SiteTestCase
 {

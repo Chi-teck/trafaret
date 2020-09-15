@@ -64,14 +64,26 @@ final class TagSplitterTest extends TestCase
 
         $data[] = [
             <<< 'HTML'
-            <test></test>
+            <div>
+            <span>
+            </span>
+            </div>
+            HTML,
+            '<div><span></span></div>'
+        ];
+
+        $data[] = [
+            <<< 'HTML'
+            <test>
+            </test>
             HTML,
             '<test></test>'
         ];
 
         $data[] = [
             <<< 'HTML'
-            <test>< test>
+            <test>
+            < test>
             HTML,
             '<test>< test>'
         ];

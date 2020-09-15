@@ -4,24 +4,9 @@ declare(strict_types=1);
 
 namespace Trafaret\Processor;
 
-use Trafaret\TrafaretInterface;
-
-final class Dom implements ProcessorInterface
+final class Dom extends AbstractProcessor
 {
-    public function processTrafaret(TrafaretInterface $trafaret): TrafaretInterface
-    {
-        return $trafaret->cloneWithTemplate(self::normalize($trafaret->getTemplate()));
-    }
-
-    public function processInput(string $input): string
-    {
-        return self::normalize($input);
-    }
-
-    /**
-     * Normalizes an HTML snippet.
-     */
-    private static function normalize(string $html): string
+    protected function doProcess(string $html): string
     {
         $dom = new \DOMDocument();
         // Ignore warnings during HTML soup loading.

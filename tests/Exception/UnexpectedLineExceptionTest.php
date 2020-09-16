@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Trafaret\Tests;
+namespace Trafaret\Tests\Excpetion;
 
 use PHPUnit\Framework\TestCase;
 use Trafaret\Exception\UnexpectedLineException;

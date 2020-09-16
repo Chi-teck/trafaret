@@ -51,9 +51,8 @@ final class Manager
         $template = \rtrim($trafaret->getTemplate());
         $constraints = $trafaret->getConstraints();
 
-        $input_lines = $this->split($input);
         $trafaret_lines = $this->split($template);
-
+        $input_lines = $this->split($input);
 
         $total_lines = \max(\count($trafaret_lines), \count($input_lines));
         for ($ln = 0; $ln < $total_lines; $ln++) {
@@ -81,7 +80,25 @@ final class Manager
             \array_shift($values);
 
             // -- Match named placeholders and found values.
-            $data += $this->processPlaceholders($placeholders, $values, $constraints);
+            foreach ($placeholders as $index => $name) {
+                $value = $values[$index][0];
+                if (\array_key_exists($name, $constraints)) {
+                    $constraint = $constraints[$name];
+                    $violations = $this->validator->validate($value, $constraint);
+                    if (\count($violations) > 0) {
+                        throw new UnexpectedValueException($trafaret_line, $input_line, $violations[0], $name);
+                    }
+                }
+                // Placeholders prefixed with '-' are ignored.
+                if (!\str_starts_with($name, '-')) {
+                    if (\str_ends_with($name, '[]')) {
+                        $data[\substr($name, 0, -2)][] = $value;
+                    }
+                    else {
+                        $data[$name] = $value;
+                    }
+                }
+            }
         }
 
         return $data;
@@ -90,30 +107,5 @@ final class Manager
     private function split(string $input): array
     {
         return \preg_split('/$\R?^/m', $input);
-    }
-
-    private function processPlaceholders(array $placeholders, array $values, array $constraints): array
-    {
-        $data = [];
-        foreach ($placeholders as $index => $name) {
-            $value = $values[$index][0];
-            if (\array_key_exists($name, $constraints)) {
-                $constraint = $constraints[$name];
-                $violations = $this->validator->validate($value, $constraint);
-                if (\count($violations) > 0) {
-                    throw new UnexpectedValueException($violations[0], $name);
-                }
-            }
-            // Placeholders prefixed with '-' can be ignored.
-            if (!\str_starts_with($name, '-')) {
-                if (\str_ends_with($name, '[]')) {
-                    $data[\substr($name, 0, -2)][] = $value;
-                }
-                else {
-                    $data[$name] = $value;
-                }
-            }
-        }
-        return $data;
     }
 }

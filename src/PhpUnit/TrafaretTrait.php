@@ -7,12 +7,14 @@ namespace Trafaret\PhpUnit;
 use PHPUnit\Framework\ExpectationFailedException;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Trafaret\Exception\UnexpectedLineException;
 use Trafaret\Manager;
 use Trafaret\Processor\Chained;
 use Trafaret\Processor\EmptyLine;
 use Trafaret\Processor\LeadingSpace;
 use Trafaret\Processor\MultiLineTagContent;
+use Trafaret\Processor\ProcessorInterface;
 use Trafaret\Processor\TagSplitter;
 use Trafaret\Trafaret;
 
@@ -20,17 +22,27 @@ trait TrafaretTrait
 {
     private $trafaretManager;
 
-    private function getTrafaretManager(): Manager
+    protected function getTrafaretValidator(): ValidatorInterface
+    {
+        return Validation::createValidator();
+    }
+
+    protected function getTrafaretProcessor(): ProcessorInterface
+    {
+        return new Chained(
+            new LeadingSpace(),
+            new TagSplitter(),
+            new MultiLineTagContent(),
+            new EmptyLine(),
+        );
+    }
+
+    protected function getTrafaretManager(): Manager
     {
         if (!$this->trafaretManager) {
             $this->trafaretManager = new Manager(
-                Validation::createValidator(),
-                new Chained(
-                    new LeadingSpace(),
-                    new TagSplitter(),
-                    new MultiLineTagContent(),
-                    new EmptyLine(),
-                ),
+                $this->getTrafaretValidator(),
+                $this->getTrafaretProcessor(),
             );
         }
         return $this->trafaretManager;
@@ -40,7 +52,7 @@ trait TrafaretTrait
      * @param \Trafaret\TrafaretInterface|string $trafaret
      *   A trafaret object or trafaret template.
      */
-    public function assertStringByTrafaret($trafaret, string $actual): void
+    protected function assertStringByTrafaret($trafaret, string $actual): void
     {
         if (\is_string($trafaret)) {
             $trafaret = new Trafaret($trafaret);

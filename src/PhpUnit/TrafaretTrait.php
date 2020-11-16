@@ -12,6 +12,7 @@ use Trafaret\Manager;
 use Trafaret\Processor\Chained;
 use Trafaret\Processor\EmptyLine;
 use Trafaret\Processor\LeadingSpace;
+use Trafaret\Processor\MultiLineTagContent;
 use Trafaret\Processor\TagSplitter;
 use Trafaret\Trafaret;
 
@@ -27,6 +28,7 @@ trait TrafaretTrait
                 new Chained(
                     new LeadingSpace(),
                     new TagSplitter(),
+                    new MultiLineTagContent(),
                     new EmptyLine(),
                 ),
             );

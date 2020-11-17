@@ -10,7 +10,7 @@ use Trafaret\Trafaret;
 
 final class MultiLineTagContentTest extends TestCase
 {
-    public function testProcessTrafaret(): void
+    public function testProcess(): void
     {
         $processor = new MultiLineTagContent();
 

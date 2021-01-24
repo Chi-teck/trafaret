@@ -31,7 +31,7 @@ jobs:
               run: composer install
 
             - name: Run codesniffer
-              run: vendor/bin/phpcs -p
+              run: vendor/bin/phpcs -p --colors
 
             - name: Run tests
               run: vendor/bin/phpunit --colors=always

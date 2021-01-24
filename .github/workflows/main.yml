@@ -28,8 +28,6 @@ jobs:
       - name: Install dependencies
         run: composer install
       - name: Run codesniffer
-        run: |
-          vendor/bin/phpcs
+        run: vendor/bin/phpcs
       - name: Run tests
-        run: |
-          vendor/bin/phpunit
+        run: vendor/bin/phpunit

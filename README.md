@@ -1,7 +1,4 @@
 # Trafaret
-
-[![Build Status](https://travis-ci.org/Chi-teck/trafaret.svg?branch=master)](https://travis-ci.org/Chi-teck/trafaret)
-
 A simple way to extract data from multiline textual snippets.
 
 ## Installation

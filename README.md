@@ -1,4 +1,6 @@
 # Trafaret
+[![Build Status](https://github.com/Chi-teck/trafaret/workflows/Tests/badge.svg)](https://github.com/Chi-teck/trafaret/workflows/Tests/badge.svg)
+
 A simple way to extract data from multiline textual snippets.
 
 ## Installation

@@ -14,7 +14,7 @@ final class Trafaret implements TrafaretInterface
         $this->template = $template;
         $this->constraints = $constraints;
     }
-    
+
     public static function createFromFile(string $file_name, array $constraints = []): self
     {
         if (!\is_file($file_name)) {

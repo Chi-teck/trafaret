@@ -15,7 +15,7 @@ use Trafaret\Trafaret;
 final class ManagerTest extends TestCase
 {
     private $manager;
-    
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -36,7 +36,7 @@ final class ManagerTest extends TestCase
         $data = $this->manager->apply($trafaret, $input);
         self::assertSame($expected_data, $data);
     }
-    
+
     public function managerDataProvider(): array
     {
         // -- Input without variables.
